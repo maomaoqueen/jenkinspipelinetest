@@ -24,8 +24,9 @@ pipeline {
 			}
         }
 		stage('Deploy') {
-		    
-		    sh 'docker -version'
+		    steps {
+				sh 'docker -version'
+			}
 		}
     }
 }
