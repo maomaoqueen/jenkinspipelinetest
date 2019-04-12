@@ -11,7 +11,12 @@ pipeline {
 			    maven 'apache-maven-3.6.0'
 			}
 		    steps {
-			    sh 'mvn -v'
+			    dir() {
+				    echo 'Clean'
+				    sh 'mvn clean'
+					echo 'Build'
+					sh 'mvn package'
+				}   
 			}
 		}
 		stage('Deploy') {
