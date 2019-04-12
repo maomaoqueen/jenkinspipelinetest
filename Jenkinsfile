@@ -11,7 +11,7 @@ pipeline {
 			    maven 'apache-maven-3.6.0'
 			}
 		    steps {
-			    mvn -v
+			    sh 'mvn -v'
 			}
 		}
 		stage('Deploy') {
