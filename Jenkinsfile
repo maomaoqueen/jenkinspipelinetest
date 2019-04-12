@@ -5,17 +5,18 @@ pipeline {
             tools { 
                 maven 'apache-maven-3.6.0'
             }
-			dir ('pipelinetest/demo') {
-				steps {
+			steps {
+				dir ('pipelinetest/demo'){
 					echo 'Clean'
 					sh 'mvn clean'
 				}
-				steps {
+			}
+			steps {
+				dir ('pipelinetest/demo'){
 					echo 'Build'
 					sh 'mvn package'
 				}
 			}
-            
         }
 		stage('Deploy') {
 		    
