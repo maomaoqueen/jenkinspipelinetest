@@ -11,7 +11,7 @@ pipeline {
 			    maven 'apache-maven-3.6.0'
 			}
 		    steps {
-			    dir() {
+			    dir('pipelinetest/demo') {
 				    echo 'Clean'
 				    sh 'mvn clean'
 					echo 'Build'
