@@ -27,7 +27,6 @@ pipeline {
             }
         }
         stage('clean and build test') {
-            when { branch 'master' }
             steps {
                 echo '333'
 //                echo 'Staring to build docker image'
