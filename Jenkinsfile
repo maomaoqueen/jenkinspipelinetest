@@ -27,10 +27,9 @@ pipeline {
         }
         stage('DockerBuild') {
             agent {
-                docker {
-                    image 'maven:3-alpine'
+                dockerfile {
+                    dir 'pipelinetest/demo'
                     label 'docker-135'
-                    args  '-v /tmp:/tmp'
                 }
             }
             steps {
