@@ -32,7 +32,8 @@ pipeline {
                     }
                 }
                 echo 'delete current docker image'
-                sh 'docker rmi "${DOCKER_REGISTRY_URL}/${env.PROJECT_NAME}:${env.BUILD_ID}"'
+                echo 'docker rmi '"${DOCKER_REGISTRY_URL}/${env.PROJECT_NAME}:${env.BUILD_ID}"
+                sh 'docker rmi '"${DOCKER_REGISTRY_URL}/${env.PROJECT_NAME}:${env.BUILD_ID}"
             }
         }
         stage('Deploy') {
