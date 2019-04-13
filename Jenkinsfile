@@ -13,50 +13,52 @@ pipeline {
             tools {
                 maven 'apache-maven-3.6.0'
             }
+            when { not { branch 'master' } }
             steps {
-                dir('pipelinetest/demo') {
-                    echo 'Clean'
-                    sh 'mvn clean'
-                    echo 'Build'
-                    sh 'mvn package'
-                }
-            }
-            script {
-                if (env.BRANCH_NAME != 'master') {
-                    steps {
-                        echo 'Staring to build docker image'
-
-                        dir('pipelinetest/demo') {
-                            def appImage = docker.build("${REGISTRY_URL}/${env.PROJECT_NAME}:${env.BUILD_ID}")
-                            appImage.push()
-                        }
-
-                        sh "docker rmi ${REGISTRY_URL}/${env.PROJECT_NAME}:${env.BUILD_ID}"
-                    }
-                }
+                echo '111'
+//                dir('pipelinetest/demo') {
+//                    echo 'Clean'
+//                    sh 'mvn clean'
+//                    echo 'Build'
+//                    sh 'mvn package'
+//                }
             }
         }
+        stage('clean and build') {
+            when { branch 'master' }
+            echo '222'
+//            steps {
+//                echo 'Staring to build docker image'
+//
+//                dir('pipelinetest/demo') {
+//                    def appImage = docker.build("${REGISTRY_URL}/${env.PROJECT_NAME}:${env.BUILD_ID}")
+//                    appImage.push()
+//                }
+//
+//                sh "docker rmi ${REGISTRY_URL}/${env.PROJECT_NAME}:${env.BUILD_ID}"
+//            }
+        }
         stage('Deploy') {
-            steps {
-                script {
-                    if (env.BRANCH_NAME != 'master') {
-                        def remote = [:]
-                        remote.name = 'node-135'
-                        remote.host = '10.10.200.135'
-                        remote.allowAnyHosts = true
-
-                        withCredentials([usernamePassword(credentialsId: '29126132-7287-498c-a9c2-f77b9e384ac3', passwordVariable: 'password', usernameVariable: 'username')]) {
-                            remote.user = username
-                            remote.password = password
-
-                            sshCommand remote: remote, command: "/usr/local/docker/build.sh --replication 2 --tag $BUILD_NUMBER --inner-port=6000 --outer-port=6000 --entrypoint=\"-Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08\"  ${REGISTRY_URL}/${PROJECT_NAME}"
-                        }
-                    } else {
-                        echo "branch name is ${env.BRANCH_NAME}"
-                        echo 'no need to deploy'
-                    }
-                }
-            }
+//            steps {
+//                script {
+//                    if (env.BRANCH_NAME != 'master') {
+//                        def remote = [:]
+//                        remote.name = 'node-135'
+//                        remote.host = '10.10.200.135'
+//                        remote.allowAnyHosts = true
+//
+//                        withCredentials([usernamePassword(credentialsId: '29126132-7287-498c-a9c2-f77b9e384ac3', passwordVariable: 'password', usernameVariable: 'username')]) {
+//                            remote.user = username
+//                            remote.password = password
+//
+//                            sshCommand remote: remote, command: "/usr/local/docker/build.sh --replication 2 --tag $BUILD_NUMBER --inner-port=6000 --outer-port=6000 --entrypoint=\"-Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08\"  ${REGISTRY_URL}/${PROJECT_NAME}"
+//                        }
+//                    } else {
+//                        echo "branch name is ${env.BRANCH_NAME}"
+//                        echo 'no need to deploy'
+//                    }
+//                }
+//            }
         }
     }
 }
