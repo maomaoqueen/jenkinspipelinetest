@@ -31,9 +31,9 @@ pipeline {
                         appImage.push()
                     }
                 }
-                echo 'delete current docker image'
-                echo "docker rmi 10.10.200.135:5000/${env.PROJECT_NAME}:${env.BUILD_ID}"
-                sh "docker rmi 10.10.200.135:5000/${env.PROJECT_NAME}:${env.BUILD_ID}"
+//                echo 'delete current docker image'
+//                echo "docker rmi 10.10.200.135:5000/${env.PROJECT_NAME}:${env.BUILD_ID}"
+//                sh "docker rmi 10.10.200.135:5000/${env.PROJECT_NAME}:${env.BUILD_ID}"
             }
         }
         stage('Deploy') {
