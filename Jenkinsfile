@@ -6,7 +6,7 @@ pipeline {
     }
     environment {
         PROJECT_NAME = 'pipelinetest'
-        BASE = '10.10.200.135:5000'
+        REGISTRY_URL = '10.10.200.135:5000'
     }
     stages {
         stage('Maven clean and build') {
@@ -27,11 +27,11 @@ pipeline {
                 echo 'Staring to build docker image'
                 script {
                     dir('pipelinetest/demo') {
-                        def appImage = docker.build("${BASE}/${env.PROJECT_NAME}:${env.BUILD_ID}")
+                        def appImage = docker.build("${REGISTRY_URL}/${env.PROJECT_NAME}:${env.BUILD_ID}")
                         appImage.push()
                     }
                 }
-                sh "docker rmi ${BASE}/${env.PROJECT_NAME}:${env.BUILD_ID}"
+                sh "docker rmi ${REGISTRY_URL}/${env.PROJECT_NAME}:${env.BUILD_ID}"
             }
         }
         stage('Deploy') {
