@@ -24,10 +24,10 @@ pipeline {
         }
         stage('DockerBuild') {
             agent {
-                dockerfile {
-                    dir 'pipelinetest/demo'
-                    label 'docker-135'
-                    registryUrl '10.10.200.135:5000'
+                docker {
+                    image 'maven:3-alpine'
+                    label 'my-defined-label'
+                    args  '-v /tmp:/tmp'
                 }
             }
             steps {
