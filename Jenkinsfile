@@ -26,12 +26,13 @@ pipeline {
             }
         }
         stage('DockerBuild') {
-//            agent {
-//                docker {
-//                    image 'maven:3-alpine'
-//                    args  '-v /tmp:/tmp'
-//                }
-//            }
+            agent {
+                docker {
+                    image 'maven:3-alpine'
+                    label 'docker-135'
+                    args  '-v /tmp:/tmp'
+                }
+            }
             steps {
                 sh 'docker ps'
             }
