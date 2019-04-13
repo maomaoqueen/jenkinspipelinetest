@@ -4,7 +4,7 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
     parameters {
-        String(name: 'projectName', defaultValue: 'pipelinetest', description: '应用名称')
+        string(name: 'projectName', defaultValue: 'pipelinetest', description: '应用名称')
     }
     stages {
         stage('Checkout') {
@@ -28,11 +28,13 @@ pipeline {
         stage('DockerBuild') {
             steps {
                 echo 'Staring to build docker image'
-                // 由于现阶段jenkins版本不支持声明式语法构建和推送docker镜像命令所以修改为脚本式语法
-                script {
-                    docker.withRegistry('http://10.10.200.135:5000')
-                    def appImage = docker.build("${projectName}:${env.BUILD_ID}")
-                    appImage.push()
+                dir('pipelinetest/demo') {
+                    // 由于现阶段jenkins版本不支持声明式语法构建和推送docker镜像命令所以修改为脚本式语法
+                    script {
+                        docker.withRegistry('http://10.10.200.135:5000')
+                        def appImage = docker.build("${projectName}:${env.BUILD_ID}")
+                        appImage.push()
+                    }
                 }
                 sh 'docker ps'
             }
