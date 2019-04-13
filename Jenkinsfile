@@ -23,11 +23,15 @@ pipeline {
 //                    sh 'mvn package'
 //                }
             }
-        }
-        stage('clean and build') {
             when { branch 'master' }
             steps {
                 echo '222'
+            }
+        }
+        stage('clean and build test') {
+            when { branch 'master' }
+            steps {
+                echo '333'
 //                echo 'Staring to build docker image'
 //
 //                dir('pipelinetest/demo') {
