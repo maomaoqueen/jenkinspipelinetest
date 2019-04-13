@@ -3,8 +3,8 @@ pipeline {
     options {
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
-    environment {
-        PROJECT_NAME = 'pipelinetest'
+    parameters {
+        String(name: 'projectName', defaultValue: 'pipelinetest', description: '应用名称')
     }
     stages {
         stage('Checkout') {
@@ -26,18 +26,14 @@ pipeline {
             }
         }
         stage('DockerBuild') {
-            agent {
-                dockerfile {
-                    dir 'pipelinetest/demo'
-                    label 'docker-135'
-                    tag 'test_fun'
-                }
-            }
-            options {
-                // 需要跳过默认的检出动作,否则在agent中的dockerfile构建会触发检出动作
-                skipDefaultCheckout()
-            }
             steps {
+                echo 'Staring to build docker image'
+                // 由于现阶段jenkins版本不支持声明式语法构建和推送docker镜像命令所以修改为脚本式语法
+                script {
+                    docker.withRegistry('http://10.10.200.135:5000')
+                    def appImage = docker.build("${projectName}:${env.BUILD_ID}")
+                    appImage.push()
+                }
                 sh 'docker ps'
             }
         }
