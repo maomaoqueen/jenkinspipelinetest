@@ -25,8 +25,10 @@ pipeline {
             steps {
                 echo 'Staring to build docker image'
                 script {
-                    def appImage = docker.build("10.10.200.135:5000/${env.PROJECT_NAME}:${env.BUILD_ID}",'-f pipelinetest/demo/Dockerfile')
-                    appImage.push()
+                    dir('/pipelinetest/demo'){
+                        def appImage = docker.build("10.10.200.135:5000/${env.PROJECT_NAME}:${env.BUILD_ID}")
+                        appImage.push()
+                    }
                 }
                 sh 'docker ps'
             }
