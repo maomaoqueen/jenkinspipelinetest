@@ -10,7 +10,6 @@ pipeline {
     }
     stages {
         stage('clean and build') {
-            when { not { branch 'master' } }
 //            tools {
 //                maven 'apache-maven-3.6.0'
 //            }
