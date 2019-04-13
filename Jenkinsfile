@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
     environment {
         PROJECT_NAME = 'pipelinetest'
     }
