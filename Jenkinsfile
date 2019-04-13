@@ -9,6 +9,24 @@ pipeline {
         REGISTRY_URL = '10.10.200.135:5000'
     }
     stages {
+        stage('clean and build') {
+            when { not { branch 'master' } }
+//            tools {
+//                maven 'apache-maven-3.6.0'
+//            }
+            steps {
+                echo '111'
+//                dir('pipelinetest/demo') {
+//                    echo 'Clean'
+//                    sh 'mvn clean'
+//                    echo 'Build'
+//                    sh 'mvn package'
+//                }
+            }
+            steps {
+                echo '222'
+            }
+        }
         stage('clean and build test') {
             when { branch 'master' }
             steps {
@@ -21,6 +39,9 @@ pipeline {
 //                }
 //
 //                sh "docker rmi ${REGISTRY_URL}/${env.PROJECT_NAME}:${env.BUILD_ID}"
+            }
+            steps {
+                echo '444'
             }
         }
 //        stage('Deploy') {
