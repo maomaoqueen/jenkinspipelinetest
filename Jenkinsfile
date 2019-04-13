@@ -21,15 +21,15 @@ pipeline {
                     sh 'mvn package'
                 }   
             }
-            steps {
-                agent {
-                    dockerfile {
-                        dir 'pipelinetest/demo'
-                        additionalBuildArgs "--build-arg ${BUILD_NUMBER}"
-                        registryUrl '10.10.200.135:5000'
-                    }
-                }
-            }
+//            steps {
+//                agent {
+//                    dockerfile {
+//                        dir 'pipelinetest/demo'
+//                        additionalBuildArgs "--build-arg ${BUILD_NUMBER}"
+//                        registryUrl '10.10.200.135:5000'
+//                    }
+//                }
+//            }
         }
         stage('Deploy') {
             steps {
