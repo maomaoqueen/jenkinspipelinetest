@@ -14,6 +14,7 @@ pipeline {
             steps {
                 echo '111'
             }
+            when { branch 'develop' }
             steps {
                 echo '222'
             }
