@@ -30,7 +30,12 @@ pipeline {
                 dockerfile {
                     dir 'pipelinetest/demo'
                     label 'docker-135'
+                    tag 'test_fun'
                 }
+            }
+            options {
+                // 需要跳过默认的检出动作,否则在agent中的dockerfile构建会触发检出动作
+                skipDefaultCheckout()
             }
             steps {
                 sh 'docker ps'
