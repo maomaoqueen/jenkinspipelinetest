@@ -42,7 +42,7 @@ pipeline {
 //                sh "docker rmi ${REGISTRY_URL}/${env.PROJECT_NAME}:${env.BUILD_ID}"
             }
         }
-        stage('Deploy') {
+//        stage('Deploy') {
 //            steps {
 //                script {
 //                    if (env.BRANCH_NAME != 'master') {
@@ -63,6 +63,6 @@ pipeline {
 //                    }
 //                }
 //            }
-        }
+//        }
     }
 }
