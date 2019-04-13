@@ -23,7 +23,6 @@ pipeline {
 //                    sh 'mvn package'
 //                }
             }
-            when { branch 'master' }
             steps {
                 echo '222'
             }
