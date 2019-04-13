@@ -6,10 +6,10 @@ pipeline {
     }
     environment {
         PROJECT_NAME = 'pipelinetest'
-        DOCKER_REGISTRY_URL = '10.10.200.135:5000'
+        DOCKER_REGISTRY_URL = "10.10.200.135:5000"
     }
     stages {
-        stage('MavenCleanAndBuild') {
+        stage('Maven clean and build') {
             tools {
                 maven 'apache-maven-3.6.0'
             }
@@ -22,7 +22,7 @@ pipeline {
                 }
             }
         }
-        stage('DockerBuild') {
+        stage('Docker build') {
             steps {
                 echo 'Staring to build docker image'
                 script {
