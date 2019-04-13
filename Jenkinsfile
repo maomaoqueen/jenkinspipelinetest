@@ -10,13 +10,19 @@ pipeline {
     }
     stages {
         stage('Maven clean and build') {
-            echo '111'
+            steps {
+                echo '111'
+            }
         }
         stage('Docker build') {
-            echo '222'
+            steps {
+                echo '222'
+            }
         }
         stage('Deploy') {
-            echo '333'
+            steps {
+                echo '333'
+            }
         }
     }
 }
