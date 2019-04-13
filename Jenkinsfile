@@ -4,8 +4,8 @@ pipeline {
         // 设置保留的最大历史构建数为10
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
-    parameters {
-        string(name: 'projectName', defaultValue: 'pipelinetest', description: '应用名称')
+    environment {
+        PROJECT_NAME = 'pipelinetest'
     }
     stages {
         stage('MavenCleanAndBuild') {
@@ -27,7 +27,7 @@ pipeline {
                 dir('pipelinetest/demo') {
                     script {
                         docker.withRegistry('http://10.10.200.135:5000')
-                        def appImage = docker.build("${projectName}:${env.BUILD_ID}")
+                        def appImage = docker.build("${env.PROJECT_NAME}:${env.BUILD_ID}")
                         appImage.push()
                     }
                 }
