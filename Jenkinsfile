@@ -6,7 +6,7 @@ pipeline {
     }
     environment {
         PROJECT_NAME = 'pipelinetest'
-        AAA = '10.10.200.135'
+        AAA = '10.10.200.135:5000'
     }
     stages {
         stage('Maven clean and build') {
