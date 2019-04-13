@@ -29,7 +29,7 @@ pipeline {
             agent {
                 docker {
                     image 'maven:3-alpine'
-                    label 'docker-135'
+                    label 'docker'
                     args  '-v /tmp:/tmp'
                 }
             }
