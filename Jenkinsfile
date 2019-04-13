@@ -26,7 +26,7 @@ pipeline {
                 echo '222'
             }
         }
-        stage('clean and build test') {
+        stage('xxxxxx') {
             steps {
                 echo '333'
 //                echo 'Staring to build docker image'
