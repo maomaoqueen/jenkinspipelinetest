@@ -14,6 +14,9 @@ pipeline {
             steps {
                 echo '111'
             }
+            steps {
+                echo '222'
+            }
         }
         stage('Docker build') {
             steps {
