@@ -4,12 +4,12 @@ pipeline {
         PROJECT_NAME = 'pipelinetest'
     }
     stages {
-        stage('checkout') {
+        stage('Checkout') {
             steps {
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'github-test', url: 'https://github.com/maomaoqueen/jenkinspipelinetest.git']]])
             }
         }
-        stage('CleanAndBuild') {
+        stage('MavenCleanAndBuild') {
             tools {
                 maven 'apache-maven-3.6.0'
             }
@@ -21,14 +21,16 @@ pipeline {
                     sh 'mvn package'
                 }   
             }
-            steps {
-                agent {
-                    dockerfile {
-                        dir 'pipelinetest/demo'
-                        //additionalBuildArgs "--build-arg ${BUILD_NUMBER}"
-                        registryUrl '10.10.200.135:5000'
-                    }
+        }
+        stage('DockerBuild') {
+            agent {
+                dockerfile {
+                    dir 'pipelinetest/demo'
+                    registryUrl '10.10.200.135:5000'
                 }
+            }
+            steps {
+                sh 'docker ps'
             }
         }
         stage('Deploy') {
