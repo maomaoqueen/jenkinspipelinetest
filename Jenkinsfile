@@ -24,12 +24,10 @@ pipeline {
         stage('DockerBuild') {
             steps {
                 echo 'Staring to build docker image'
-                dir('pipelinetest/demo') {
-                    script {
-                        docker.withRegistry('http://10.10.200.135:5000')
-                        def appImage = docker.build("${env.PROJECT_NAME}:${env.BUILD_ID}")
-                        appImage.push()
-                    }
+                script {
+                    docker.withRegistry('http://10.10.200.135:5000')
+                    def appImage = docker.build("${env.PROJECT_NAME}:${env.BUILD_ID}",'-f /pipelinetest/demo/Dockerfile')
+                    appImage.push()
                 }
                 sh 'docker ps'
             }
