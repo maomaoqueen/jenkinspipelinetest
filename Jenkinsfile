@@ -26,6 +26,7 @@ pipeline {
             agent {
                 dockerfile {
                     dir 'pipelinetest/demo'
+                    label 'docker-135'
                     registryUrl '10.10.200.135:5000'
                 }
             }
