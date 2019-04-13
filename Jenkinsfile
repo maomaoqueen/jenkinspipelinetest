@@ -9,7 +9,7 @@ pipeline {
         REGISTRY_URL = '10.10.200.135:5000'
     }
     stages {
-        stage('Maven clean and build') {
+        stage('clean and build') {
             tools {
                 maven 'apache-maven-3.6.0'
             }
@@ -21,17 +21,19 @@ pipeline {
                     sh 'mvn package'
                 }
             }
-        }
-        stage('Docker build') {
-            steps {
-                echo 'Staring to build docker image'
-                script {
-                    dir('pipelinetest/demo') {
-                        def appImage = docker.build("${REGISTRY_URL}/${env.PROJECT_NAME}:${env.BUILD_ID}")
-                        appImage.push()
+            script {
+                if (env.BRANCH_NAME != 'master') {
+                    steps {
+                        echo 'Staring to build docker image'
+
+                        dir('pipelinetest/demo') {
+                            def appImage = docker.build("${REGISTRY_URL}/${env.PROJECT_NAME}:${env.BUILD_ID}")
+                            appImage.push()
+                        }
+
+                        sh "docker rmi ${REGISTRY_URL}/${env.PROJECT_NAME}:${env.BUILD_ID}"
                     }
                 }
-                sh "docker rmi ${REGISTRY_URL}/${env.PROJECT_NAME}:${env.BUILD_ID}"
             }
         }
         stage('Deploy') {
@@ -47,7 +49,7 @@ pipeline {
                             remote.user = username
                             remote.password = password
 
-                            sshCommand remote: remote, command: "/usr/local/docker/build.sh --replication 2 --tag $BUILD_NUMBER --inner-port=6000 --outer-port=6000 --entrypoint=\"-Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08\"  10.10.200.135:5000/${PROJECT_NAME}"
+                            sshCommand remote: remote, command: "/usr/local/docker/build.sh --replication 2 --tag $BUILD_NUMBER --inner-port=6000 --outer-port=6000 --entrypoint=\"-Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08\"  ${REGISTRY_URL}/${PROJECT_NAME}"
                         }
                     } else {
                         echo "branch name is ${env.BRANCH_NAME}"
