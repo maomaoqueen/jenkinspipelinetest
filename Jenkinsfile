@@ -18,14 +18,14 @@ pipeline {
                     sh 'mvn clean'
                     echo 'Build'
                     sh 'mvn package'
-                }   
+                }
             }
         }
         stage('DockerBuild') {
             steps {
                 echo 'Staring to build docker image'
                 script {
-                    dir('pipelinetest/demo'){
+                    dir('pipelinetest/demo') {
                         def appImage = docker.build("10.10.200.135:5000/${env.PROJECT_NAME}:${env.BUILD_ID}")
                         appImage.push()
                     }
@@ -35,19 +35,22 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    def remote = [:]
-                    remote.name = 'node-135'
-                    remote.host = '10.10.200.135'
-                    remote.allowAnyHosts = true
+                    if (env.BRANCH_NAME == 'master') {
+                        def remote = [:]
+                        remote.name = 'node-135'
+                        remote.host = '10.10.200.135'
+                        remote.allowAnyHosts = true
 
-                    withCredentials([usernamePassword(credentialsId: '29126132-7287-498c-a9c2-f77b9e384ac3', passwordVariable: 'password', usernameVariable: 'username')]) {
-                        remote.user = username
-                        remote.password = password
+                        withCredentials([usernamePassword(credentialsId: '29126132-7287-498c-a9c2-f77b9e384ac3', passwordVariable: 'password', usernameVariable: 'username')]) {
+                            remote.user = username
+                            remote.password = password
 
-                        sshCommand remote: remote, command: "/usr/local/docker/build.sh --replication 2 --tag $BUILD_NUMBER --inner-port=6000 --outer-port=6000 --entrypoint=\"-Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08\"  10.10.200.135:5000/${PROJECT_NAME}"
+                            sshCommand remote: remote, command: "/usr/local/docker/build.sh --replication 2 --tag $BUILD_NUMBER --inner-port=6000 --outer-port=6000 --entrypoint=\"-Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08\"  10.10.200.135:5000/${PROJECT_NAME}"
+                        }
+                    } else {
+                        echo "branch name is ${env.BRANCH_NAME}"
+                        echo 'no need to deploy'
                     }
-
-
                 }
             }
         }
