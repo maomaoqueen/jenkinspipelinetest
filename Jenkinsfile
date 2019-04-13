@@ -10,6 +10,7 @@ pipeline {
     }
     stages {
         stage('Maven clean and build') {
+            when { branch 'master' }
             steps {
                 echo '111'
             }
