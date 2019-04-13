@@ -6,6 +6,7 @@ pipeline {
     }
     environment {
         PROJECT_NAME = 'pipelinetest'
+        DOCKER_REGISTRY_URL = '10.10.200.135:5000'
     }
     stages {
         stage('MavenCleanAndBuild') {
@@ -26,16 +27,18 @@ pipeline {
                 echo 'Staring to build docker image'
                 script {
                     dir('pipelinetest/demo') {
-                        def appImage = docker.build("10.10.200.135:5000/${env.PROJECT_NAME}:${env.BUILD_ID}")
+                        def appImage = docker.build("${DOCKER_REGISTRY_URL}/${env.PROJECT_NAME}:${env.BUILD_ID}")
                         appImage.push()
                     }
                 }
+                echo 'delete current docker image'
+                docker rmi ${DOCKER_REGISTRY_URL}/${env.PROJECT_NAME}:${env.BUILD_ID}
             }
         }
         stage('Deploy') {
             steps {
                 script {
-                    if (env.BRANCH_NAME == 'master') {
+                    if (env.BRANCH_NAME != 'master') {
                         def remote = [:]
                         remote.name = 'node-135'
                         remote.host = '10.10.200.135'
@@ -45,7 +48,7 @@ pipeline {
                             remote.user = username
                             remote.password = password
 
-                            sshCommand remote: remote, command: "/usr/local/docker/build.sh --replication 2 --tag $BUILD_NUMBER --inner-port=6000 --outer-port=6000 --entrypoint=\"-Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08\"  10.10.200.135:5000/${PROJECT_NAME}"
+                            sshCommand remote: remote, command: "/usr/local/docker/build.sh --replication 2 --tag $BUILD_NUMBER --inner-port=6000 --outer-port=6000 --entrypoint=\"-Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08\"  ${DOCKER_REGISTRY_URL}/${PROJECT_NAME}"
                         }
                     } else {
                         echo "branch name is ${env.BRANCH_NAME}"
