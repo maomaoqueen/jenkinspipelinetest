@@ -26,8 +26,8 @@ pipeline {
         }
         stage('clean and build') {
             when { branch 'master' }
-            echo '222'
-//            steps {
+            steps {
+                echo '222'
 //                echo 'Staring to build docker image'
 //
 //                dir('pipelinetest/demo') {
@@ -36,7 +36,7 @@ pipeline {
 //                }
 //
 //                sh "docker rmi ${REGISTRY_URL}/${env.PROJECT_NAME}:${env.BUILD_ID}"
-//            }
+            }
         }
         stage('Deploy') {
 //            steps {
