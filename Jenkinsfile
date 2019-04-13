@@ -40,7 +40,7 @@ pipeline {
                     remote.host = '10.10.200.135'
                     remote.allowAnyHosts = true
 
-                    withCredentials([sshUserPrivateKey(credentialsId: '13752d77-c1e4-4eaa-90a7-175a5ec7608a', passwordVariable: 'password', usernameVariable: 'username')]) {
+                    withCredentials([sshUserPrivateKey(credentialsId: '29126132-7287-498c-a9c2-f77b9e384ac3', passwordVariable: 'password', usernameVariable: 'username')]) {
                         remote.user = username
                         remote.password = password
 
