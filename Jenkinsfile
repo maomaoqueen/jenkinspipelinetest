@@ -27,15 +27,17 @@ pipeline {
                 script {
                     if (env.BRANCH_NAME != 'master') {
                         echo 'Staring to build docker image'
-                        script {
-                            dir('pipelinetest/demo') {
-                                def appImage = docker.build("10.10.200.135:5000/${env.PROJECT_NAME}:${env.BUILD_ID}")
-                                appImage.push()
-                            }
+                        dir('pipelinetest/demo') {
+                            def appImage = docker.build("10.10.200.135:5000/${env.PROJECT_NAME}:${env.BUILD_ID}")
+                            appImage.push()
                         }
                         echo 'delete current docker image'
                         echo "docker rmi 10.10.200.135:5000/${env.PROJECT_NAME}:${env.BUILD_ID}"
                         sh "docker rmi 10.10.200.135:5000/${env.PROJECT_NAME}:${env.BUILD_ID}"
+                    } else if(env.BRANCH_NAME == 'master') {
+                        dir('pipelinetest/demo/target') {
+                            sh "mv ${env.PROJECT_NAME}.jar ${env.PROJECT_NAME}-${env.BUILD_ID}.jar"
+                        }
                     }
                 }
             }
@@ -61,9 +63,10 @@ pipeline {
                         echo 'no need to deploy'
                     } else if (env.BRANCH_NAME == 'master') {
                         dir('pipelinetest/demo/target') {
-                            sshPublisher(publishers: [sshPublisherDesc(configName: '10.10.200.135-GONGWEI', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: "cd /root/gongwei/pehr\n" +
-                                    "nohup java -Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08 -jar ${PROJECT_NAME}.jar --server.port=6000 >/dev/null &\n" +
-                                    "nohup java -Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08 -jar ${PROJECT_NAME}.jar --server.port=6001 >/dev/null &\n", execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'pehr', remoteDirectorySDF: false, removePrefix: '', sourceFiles: "${PROJECT_NAME}.jar")], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                            sshPublisher(publishers: [sshPublisherDesc(configName: '10.10.200.135-GONGWEI', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: "ps -ef | grep pipeline | grep -v grep | awk '{print \"kill -9 \"\$2}'|sh\n" + // 杀掉之前的进程
+                                    "cd /root/gongwei/pehr\n" +
+                                    "nohup java -Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08 -jar ${PROJECT_NAME}-${BUILD_NUMBER}.jar --server.port=6000 >/dev/null &\n" +
+                                    "nohup java -Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08 -jar ${PROJECT_NAME}-${BUILD_NUMBER}.jar --server.port=6001 >/dev/null &\n", execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'pehr', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
                         }
                     }
                 }
