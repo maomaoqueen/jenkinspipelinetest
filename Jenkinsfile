@@ -14,6 +14,8 @@ pipeline {
                 maven 'apache-maven-3.6.0'
             }
             steps {
+                echo "current branch is ${env.BRANCH_NAME}"
+
                 dir('pipelinetest/demo') {
                     echo 'Clean'
                     sh 'mvn clean'
@@ -58,7 +60,7 @@ pipeline {
                         echo 'no need to deploy'
                     } else if (env.BRANCH_NAME == 'master') {
                         dir('pipelinetest/demo/target') {
-                            sshPublisher(publishers: [sshPublisherDesc(configName: '10.10.200.133-SSH', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'ls -l', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'test.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                            sshPublisher(publishers: [sshPublisherDesc(configName: '10.10.200.135-SSH', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'ls -l', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'test.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
                         }
                     }
                 }
