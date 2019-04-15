@@ -62,7 +62,7 @@ pipeline {
                     } else if (env.BRANCH_NAME == 'master') {
                         dir('pipelinetest/demo/target') {
                             sshPublisher(publishers: [sshPublisherDesc(configName: '10.10.200.135-GONGWEI', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '''echo 111
-echo ${PROJECT_NAME}''', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'pehr', remoteDirectorySDF: false, removePrefix: '', sourceFiles: "${PROJECT_NAME}.jar")], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+echo "${PROJECT_NAME}"''', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'pehr', remoteDirectorySDF: false, removePrefix: '', sourceFiles: "${PROJECT_NAME}.jar")], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
                         }
                     }
                 }
