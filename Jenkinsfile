@@ -5,7 +5,8 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
     environment {
-        PROJECT_NAME = 'pipelinetest'
+        // 此处的PROJECT_NAME应与maven打包后的jar包名保持一致,如打包后jar包为pehr-api.jar,则PROJECT_NAME='pehr-api'
+        PROJECT_NAME = 'pipeline-test'
         DOCKER_REGISTRY_URL = "10.10.200.135:5000"
     }
     stages {
@@ -60,7 +61,8 @@ pipeline {
                         echo 'no need to deploy'
                     } else if (env.BRANCH_NAME == 'master') {
                         dir('pipelinetest/demo/target') {
-                            sshPublisher(publishers: [sshPublisherDesc(configName: '10.10.200.135-SSH', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'ls -l', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'test.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                            sshPublisher(publishers: [sshPublisherDesc(configName: '10.10.200.135-GONGWEI', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '''"nohup java -Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08 -jar ${PROJECT_NAME}.jar --spring.profiles.active=prod --server.port=6000 --statis.scheduled=false >/dev/null &
+nohup java -Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08 -jar ${PROJECT_NAME}.jar --spring.profiles.active=prod --server.port=6001--statis.scheduled=false >/dev/null &"''', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'pehr', remoteDirectorySDF: false, removePrefix: '', sourceFiles: "${PROJECT_NAME}.jar")], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
                         }
                     }
                 }
