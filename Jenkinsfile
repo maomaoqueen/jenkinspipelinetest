@@ -61,7 +61,7 @@ pipeline {
                         echo 'no need to deploy'
                     } else if (env.BRANCH_NAME == 'master') {
                         dir('pipelinetest/demo/target') {
-                            sshPublisher(publishers: [sshPublisherDesc(configName: '10.10.200.135-GONGWEI', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'sh 'echo ${env.PROJECT_NAME}'', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'pehr', remoteDirectorySDF: false, removePrefix: '', sourceFiles: "${PROJECT_NAME}.jar")], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                            sshPublisher(publishers: [sshPublisherDesc(configName: '10.10.200.135-GONGWEI', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '''sh "echo ${env.PROJECT_NAME}"''', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'pehr', remoteDirectorySDF: false, removePrefix: '', sourceFiles: "${PROJECT_NAME}.jar")], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
                         }
                     }
                 }
