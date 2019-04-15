@@ -54,14 +54,16 @@ pipeline {
                             remote.user = username
                             remote.password = password
 
-                            sshCommand remote: remote, command: "/usr/local/docker/build.sh --replication 2 --tag $BUILD_NUMBER --inner-port=6000 --outer-port=6000 --entrypoint=\"-Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08\"  ${DOCKER_REGISTRY_URL}/${PROJECT_NAME}"
+                            sshCommand remote: remote, command: "/usr/local/docker/build.sh --replication 2 --tag $BUILD_NUMBER --inner-port=6000 --outer-port=6000 --entrypoint=\"-Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08\" ${DOCKER_REGISTRY_URL}/${PROJECT_NAME}"
                         }
                     } else if (env.BRANCH_NAME == 'test') {
                         echo "branch name is ${env.BRANCH_NAME}"
                         echo 'no need to deploy'
                     } else if (env.BRANCH_NAME == 'master') {
                         dir('pipelinetest/demo/target') {
-                            sshPublisher(publishers: [sshPublisherDesc(configName: '10.10.200.135-GONGWEI', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: "cd /root/gongwei/pehr;nohup java -Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08 -jar ${PROJECT_NAME}.jar --spring.profiles.active=prod --server.port=6000 --statis.scheduled=false >/dev/null &;nohup java -Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08 -jar ${PROJECT_NAME}.jar --spring.profiles.active=prod --server.port=6001--statis.scheduled=false >/dev/null &", execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'pehr', remoteDirectorySDF: false, removePrefix: '', sourceFiles: "${PROJECT_NAME}.jar")], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                            sshPublisher(publishers: [sshPublisherDesc(configName: '10.10.200.135-GONGWEI', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: "cd /root/gongwei/pehr" +
+                                    "nohup java -Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08 -jar ${PROJECT_NAME}.jar --spring.profiles.active=prod --server.port=6000 --statis.scheduled=false >/dev/null &" +
+                                    "nohup java -Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08 -jar ${PROJECT_NAME}.jar --spring.profiles.active=prod --server.port=6001--statis.scheduled=false >/dev/null &", execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'pehr', remoteDirectorySDF: false, removePrefix: '', sourceFiles: "${PROJECT_NAME}.jar")], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
                         }
                     }
                 }
