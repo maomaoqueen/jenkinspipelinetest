@@ -39,7 +39,7 @@ pipeline {
                         sh "docker rmi ${DOCKER_REGISTRY_URL}/${env.PROJECT_NAME}:${env.BUILD_ID}"
                     } else if (env.BRANCH_NAME == 'master') {
                         dir('demo1/target') {
-                            sh "mv ${env.PROJECT_NAME}.jar ${env.PROJECT_NAME}-${env.BUILD_ID}.jar"
+//                            sh "mv ${env.PROJECT_NAME}.jar ${env.PROJECT_NAME}-${env.BUILD_ID}.jar"
                         }
                     }
                 }
