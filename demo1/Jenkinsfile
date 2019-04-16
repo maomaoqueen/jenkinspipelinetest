@@ -73,6 +73,7 @@ pipeline {
                                     "./test.sh\n" +
                                     "exit \${?}\n" +
                                     "echo 123", execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'pehr', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                            echo 'finally'
                         }
                     }
                 }
