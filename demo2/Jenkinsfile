@@ -6,7 +6,7 @@ pipeline {
     }
     environment {
         // 此处的PROJECT_NAME应与maven打包后的jar包名保持一致,如打包后jar包为pehr-api.jar,则PROJECT_NAME='pehr-api'
-        PROJECT_NAME = 'pipeline-test'
+        PROJECT_NAME = 'pipeline-demo2'
         DOCKER_REGISTRY_URL = "10.10.200.135:5000"
     }
     stages {
@@ -17,17 +17,17 @@ pipeline {
             steps {
                 echo "current branch is ${env.BRANCH_NAME}"
 
-                dir('pipelinetest/demo') {
-                    echo 'Clean'
+                dir('demo2') {
+                    echo 'Clean demo2'
                     sh 'mvn clean'
-                    echo 'Build'
+                    echo 'Build demo2'
                     sh 'mvn package'
                 }
 
                 script {
                     if (env.BRANCH_NAME != 'master') {
                         echo 'Staring to build docker image'
-                        dir('pipelinetest/demo') {
+                        dir('demo2') {
                             def appImage = docker.build("10.10.200.135:5000/${env.PROJECT_NAME}:${env.BUILD_ID}")
                             appImage.push()
                         }
@@ -35,7 +35,7 @@ pipeline {
                         echo "docker rmi 10.10.200.135:5000/${env.PROJECT_NAME}:${env.BUILD_ID}"
                         sh "docker rmi 10.10.200.135:5000/${env.PROJECT_NAME}:${env.BUILD_ID}"
                     } else if(env.BRANCH_NAME == 'master') {
-                        dir('pipelinetest/demo/target') {
+                        dir('demo2/target') {
                             sh "mv ${env.PROJECT_NAME}.jar ${env.PROJECT_NAME}-${env.BUILD_ID}.jar"
                         }
                     }
@@ -65,6 +65,7 @@ pipeline {
                         dir('pipelinetest/demo/target') {
                             sshPublisher(publishers: [sshPublisherDesc(configName: '10.10.200.135-GONGWEI', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: "ps -ef | grep pipeline | grep -v grep | awk '{print \"kill -9 \"\$2}'|sh\n" + // 杀掉之前的进程
                                     "cd /root/gongwei/pehr\n" +
+                                    "rm -f *.jar\n" + // 删除之前的jar包,jenkins构建完成后会归档jar包,服务器上不需要留作备份
                                     "nohup java -Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08 -jar ${PROJECT_NAME}-${BUILD_NUMBER}.jar --server.port=6000 >/dev/null &\n" +
                                     "nohup java -Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08 -jar ${PROJECT_NAME}-${BUILD_NUMBER}.jar --server.port=6001 >/dev/null &\n", execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'pehr', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
                         }
