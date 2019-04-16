@@ -18,9 +18,9 @@ pipeline {
                 echo "current branch is ${env.BRANCH_NAME}"
 
                 dir('demo1') {
-                    echo 'Clean'
+                    echo 'Clean demo1'
                     sh 'mvn clean'
-                    echo 'Build'
+                    echo 'Build demo1'
                     sh 'mvn package'
                 }
 
