@@ -22,7 +22,7 @@ pipeline {
                     echo 'Clean demo1'
                     sh 'mvn clean'
                     echo 'Build demo1'
-                    sh 'mvn package'
+//                    sh 'mvn package'
                 }
 
                 script {
@@ -71,7 +71,7 @@ pipeline {
 //                            sshPublisher(publishers: [sshPublisherDesc(configName: '10.10.200.135-GONGWEI', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: "cd /root/gongwei/demo_2\n" +
 //                                    "/root/gongwei/deploy-script/build.sh --project-name=${PROJECT_NAME} --build-number=${BUILD_NUMBER} --healthcheck-url=${HEALTH_CHECK_URL} --check-time-interval=5 --max-check-count=1 6002 6003", execTimeout: 600000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'demo_2', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
 //                        }
-                        sh "echo `curl -s -o /dev/null -w \"%{http_code}\" http://10.10.200.135:6000${healthcheck_url}`"
+                        sh "echo `curl -s -o /dev/null -w \"%{http_code}\" http://10.10.200.135:6000${env.healthcheck_url}`"
 //                        sh """
 //                          resultcode1=`curl -s -o /dev/null -w "%{http_code}" http://10.10.200.135:6000${healthcheck_url}`
 //                          resultcode2=`curl -s -o /dev/null -w "%{http_code}" http://10.10.200.135:6001${healthcheck_url}`
