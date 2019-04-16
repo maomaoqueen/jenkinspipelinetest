@@ -76,8 +76,10 @@ pipeline {
                         echo "${resultcode1}"
                         echo "${resultcode2}"
 
-                        if(resultcode1 != '200' && resultcode2 != '200'){
-                            currentBuild.result = "FAILED"
+                        if (resultcode1 != '200' && resultcode2 != '200') {
+                            echo "1111"
+                        } else {
+                            echo "222"
                         }
 
                         sh 'docker -v'
