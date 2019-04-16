@@ -8,6 +8,7 @@ pipeline {
         // 此处的PROJECT_NAME应与maven打包后的jar包名保持一致,如打包后jar包为pehr-api.jar,则PROJECT_NAME='pehr-api'
         PROJECT_NAME = 'pipeline-demo1'
         DOCKER_REGISTRY_URL = "10.10.200.135:5000"
+        HEALTH_CHECK_URL = "/test"
     }
     stages {
         stage('Clean and build') {
@@ -65,17 +66,11 @@ pipeline {
                         echo 'no need to deploy'
                     } else if (env.BRANCH_NAME == 'master') {
                         dir('demo1/target') {
-                            def status = sshPublisher(publishers: [sshPublisherDesc(configName: '10.10.200.135-GONGWEI', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: "ps -ef | grep ${PROJECT_NAME} | grep -v grep | awk '{print \"kill -9 \"\$2}'|sh\n" + // 杀掉之前的进程
+                            sshPublisher(publishers: [sshPublisherDesc(configName: '10.10.200.135-GONGWEI', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: "ps -ef | grep ${PROJECT_NAME} | grep -v grep | awk '{print \"kill -9 \"\$2}' | sh\n" + // 杀掉之前的进程
                                     "cd /root/gongwei/pehr\n" +
-                                    "rm -f ${PROJECT_NAME}-[!${BUILD_NUMBER}].jar\n" + // 删除之前的jar包,jenkins构建完成后会归档jar包,服务器上不需要留作备份
-                                    "nohup java -Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08 -jar ${PROJECT_NAME}-${BUILD_NUMBER}.jar --server.port=6000 >/dev/null &\n" +
-                                    "nohup java -Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08 -jar ${PROJECT_NAME}-${BUILD_NUMBER}.jar --server.port=6001 >/dev/null &\n" +
-                                    "./test.sh\n" +
-                                    "exit \${?}\n" +
-                                    "echo 123", execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'pehr', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
-                            echo status
+                                    "/root/gongwei/deploy-script/build.sh --project-name=${PROJECT_NAME} --build-number=${BUILD_NUMBER} --healthcheck-url=${HEALTH_CHECK_URL}" +
+                                    "exit \${?}", execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'pehr', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
                         }
-                        echo 'finally'
                     }
                 }
             }
