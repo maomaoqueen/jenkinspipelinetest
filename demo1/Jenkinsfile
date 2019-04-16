@@ -79,8 +79,9 @@ pipeline {
                         if (resultcode1 != '200' && resultcode2 != '200') {
                             echo "1111"
                             currentBuild.result = "FAILED"
-                        } else {
+                        } else if (resultcode1 != '200' || resultcode2 != '200'){
                             echo "222"
+                            currentBuild.result = "UNSTABLE"
                         }
 
                         dir('demo1/target') {
