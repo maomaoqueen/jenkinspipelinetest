@@ -25,7 +25,8 @@ pipeline {
                 }
 
                 script {
-                    currentBuild.result = "UNSTABLE"
+//                    currentBuild.result = "UNSTABLE"
+                    currentBuild.result = "FAILED"
                     if (env.BRANCH_NAME != 'master') {
                         echo 'Staring to build docker image'
 //                        dir('demo1') {
