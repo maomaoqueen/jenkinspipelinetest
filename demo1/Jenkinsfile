@@ -31,12 +31,12 @@ pipeline {
                     if (env.BRANCH_NAME != 'master') {
                         echo 'Staring to build docker image'
                         dir('demo1') {
-                            def appImage = docker.build("10.10.200.135:5000/${env.PROJECT_NAME}:${env.BUILD_ID}")
+                            def appImage = docker.build("${DOCKER_REGISTRY_URL}/${env.PROJECT_NAME}:${env.BUILD_ID}")
                             appImage.push()
                         }
                         echo 'delete current docker image'
-                        echo "docker rmi 10.10.200.135:5000/${env.PROJECT_NAME}:${env.BUILD_ID}"
-                        sh "docker rmi 10.10.200.135:5000/${env.PROJECT_NAME}:${env.BUILD_ID}"
+                        echo "docker rmi ${DOCKER_REGISTRY_URL}/${env.PROJECT_NAME}:${env.BUILD_ID}"
+                        sh "docker rmi ${DOCKER_REGISTRY_URL}/${env.PROJECT_NAME}:${env.BUILD_ID}"
                     } else if (env.BRANCH_NAME == 'master') {
                         dir('demo1/target') {
                             sh "mv ${env.PROJECT_NAME}.jar ${env.PROJECT_NAME}-${env.BUILD_ID}.jar"
@@ -66,11 +66,17 @@ pipeline {
                         echo 'no need to deploy'
                     } else if (env.BRANCH_NAME == 'master') {
                         dir('demo1/target') {
-                            sshPublisher(publishers: [sshPublisherDesc(configName: '10.10.200.135-GONGWEI', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: "ps -ef | grep ${PROJECT_NAME} | grep -v grep | awk '{print \"kill -9 \"\$2}' | sh\n" + // 杀掉之前的进程
-                                    "cd /root/gongwei/pehr\n" +
+                            sshPublisher(publishers: [sshPublisherDesc(configName: '10.10.200.135-GONGWEI', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: "cd /root/gongwei/demo_1\n" +
                                     "/root/gongwei/deploy-script/build.sh --project-name=${PROJECT_NAME} --build-number=${BUILD_NUMBER} --healthcheck-url=${HEALTH_CHECK_URL} 6000 6001\n" +
-                                    "exit \${?}", execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'pehr', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                                    "exit \${?}", execTimeout: 600000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'demo_1', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
                         }
+                        sh "echo \$?"
+                        dir('demo1/target') {
+                            sshPublisher(publishers: [sshPublisherDesc(configName: '10.10.200.135-GONGWEI', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: "cd /root/gongwei/demo_2\n" +
+                                    "/root/gongwei/deploy-script/build.sh --project-name=${PROJECT_NAME} --build-number=${BUILD_NUMBER} --healthcheck-url=${HEALTH_CHECK_URL} 6002 6003\n" +
+                                    "exit \${?}", execTimeout: 600000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'demo_2', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                        }
+                        sh "echo \$?"
                     }
                 }
             }
