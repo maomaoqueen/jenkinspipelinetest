@@ -64,7 +64,7 @@ pipeline {
                         echo "branch name is ${env.BRANCH_NAME}"
                         echo 'no need to deploy'
                     } else if (env.BRANCH_NAME == 'master') {
-                        dir('pipelinetest/demo/target') {
+                        dir('demo1/target') {
                             sshPublisher(publishers: [sshPublisherDesc(configName: '10.10.200.135-GONGWEI', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: "ps -ef | grep pipeline | grep -v grep | awk '{print \"kill -9 \"\$2}'|sh\n" + // 杀掉之前的进程
                                     "cd /root/gongwei/pehr\n" +
                                     "rm -f *.jar\n" + // 删除之前的jar包,jenkins构建完成后会归档jar包,服务器上不需要留作备份
