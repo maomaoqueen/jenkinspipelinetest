@@ -64,8 +64,8 @@ pipeline {
                         echo "branch name is ${env.BRANCH_NAME}"
                         echo 'no need to deploy'
                     } else if (env.BRANCH_NAME == 'master') {
-                        try {
-                            dir('demo1/target') {
+                        dir('demo1/target') {
+                            try {
                                 sshPublisher(failOnError: true, publishers: [sshPublisherDesc(configName: '10.10.200.135-GONGWEI', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: "ps -ef | grep ${PROJECT_NAME} | grep -v grep | awk '{print \"kill -9 \"\$2}'|sh\n" + // 杀掉之前的进程
                                         "cd /root/gongwei/pehr\n" +
                                         "rm -f ${PROJECT_NAME}-[!${BUILD_NUMBER}].jar\n" + // 删除之前的jar包,jenkins构建完成后会归档jar包,服务器上不需要留作备份
@@ -74,11 +74,11 @@ pipeline {
                                         "./test.sh\n" +
                                         "exit \${?}\n" +
                                         "echo 123", execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'pehr', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                            } catch (Exception e) {
+                                echo 'catch block'
+                                e.printStackTrace()
+                                currentBuild.result = 'UNSTABLE'
                             }
-                        } catch (Exception e) {
-                            echo 'catch block'
-                            e.printStackTrace()
-                            currentBuild.result = 'UNSTABLE'
                         }
                         echo 'finally'
                     }
