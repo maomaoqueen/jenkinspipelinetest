@@ -8,7 +8,7 @@ pipeline {
         // 此处的PROJECT_NAME应与maven打包后的jar包名保持一致,如打包后jar包为pehr-api.jar,则PROJECT_NAME='pehr-api'
         PROJECT_NAME = 'pipeline-demo1'
         DOCKER_REGISTRY_URL = "10.10.200.135:5000"
-        HEALTH_CHECK_URL = "/test"
+        HEALTH_CHECK_URL = "/aaa"
     }
     stages {
         stage('Clean and build') {
@@ -67,13 +67,13 @@ pipeline {
                     } else if (env.BRANCH_NAME == 'master') {
                         dir('demo1/target') {
                             sshPublisher(failOnError: true, publishers: [sshPublisherDesc(configName: '10.10.200.135-GONGWEI', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: "cd /root/gongwei/demo_1\n" +
-                                    "/root/gongwei/deploy-script/build.sh --project-name=${PROJECT_NAME} --build-number=${BUILD_NUMBER} --healthcheck-url=${HEALTH_CHECK_URL} 6000 6001\n" +
+                                    "/root/gongwei/deploy-script/build.sh --project-name=${PROJECT_NAME} --build-number=${BUILD_NUMBER} --healthcheck-url=${HEALTH_CHECK_URL} --check-time-interval=5 --max-check-count=1 6000 6001\n" +
                                     "exit \${?}", execTimeout: 600000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'demo_1', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
                         }
                         sh "echo \$?"
                         dir('demo1/target') {
                             sshPublisher(failOnError: true, publishers: [sshPublisherDesc(configName: '10.10.200.135-GONGWEI', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: "cd /root/gongwei/demo_2\n" +
-                                    "/root/gongwei/deploy-script/build.sh --project-name=${PROJECT_NAME} --build-number=${BUILD_NUMBER} --healthcheck-url=${HEALTH_CHECK_URL} 6002 6003\n" +
+                                    "/root/gongwei/deploy-script/build.sh --project-name=${PROJECT_NAME} --build-number=${BUILD_NUMBER} --healthcheck-url=${HEALTH_CHECK_URL} --check-time-interval=5 --max-check-count=1 6002 6003\n" +
                                     "exit \${?}", execTimeout: 600000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'demo_2', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
                         }
                         sh "echo \$?"
