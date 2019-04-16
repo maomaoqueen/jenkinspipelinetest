@@ -71,7 +71,7 @@ pipeline {
                                     "nohup java -Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08 -jar ${PROJECT_NAME}-${BUILD_NUMBER}.jar --server.port=6000 >/dev/null &\n" +
                                     "nohup java -Xmn512m -Xms1024m -Xmx2048m -Duser.timezone=GMT+08 -jar ${PROJECT_NAME}-${BUILD_NUMBER}.jar --server.port=6001 >/dev/null &\n" +
                                     "./test.sh\n" +
-                                    "exit \\\${?}\n" +
+                                    "exit \${?}\n" +
                                     "echo 123", execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'pehr', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
                         }
                     }
