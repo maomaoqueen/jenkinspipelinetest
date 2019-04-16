@@ -67,8 +67,7 @@ pipeline {
                     } else if (env.BRANCH_NAME == 'master') {
                         dir('demo1/target') {
                             sshPublisher(publishers: [sshPublisherDesc(configName: '10.10.200.135-GONGWEI', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: "cd /root/gongwei/demo_1\n" +
-                                    "/root/gongwei/deploy-script/build.sh --project-name=${PROJECT_NAME} --build-number=${BUILD_NUMBER} --healthcheck-url=${HEALTH_CHECK_URL} --check-time-interval=5 --max-check-count=1 6000 6001\n" +
-                                    "exit \${?}", execTimeout: 600000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'demo_1', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                                    "/root/gongwei/deploy-script/build.sh --project-name=${PROJECT_NAME} --build-number=${BUILD_NUMBER} --healthcheck-url=${HEALTH_CHECK_URL} --check-time-interval=5 --max-check-count=1 6000 6001\", execTimeout: 600000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'demo_1', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
                         }
                         sh """
                           resultcode1=`curl -s -o /dev/null -w "%{http_code}" http://10.10.200.135:6000${healthcheck_url}`
@@ -78,8 +77,7 @@ pipeline {
                         """
                         dir('demo1/target') {
                             sshPublisher(publishers: [sshPublisherDesc(configName: '10.10.200.135-GONGWEI', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: "cd /root/gongwei/demo_2\n" +
-                                    "/root/gongwei/deploy-script/build.sh --project-name=${PROJECT_NAME} --build-number=${BUILD_NUMBER} --healthcheck-url=${HEALTH_CHECK_URL} --check-time-interval=5 --max-check-count=1 6002 6003\n" +
-                                    "exit \${?}", execTimeout: 600000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'demo_2', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                                    "/root/gongwei/deploy-script/build.sh --project-name=${PROJECT_NAME} --build-number=${BUILD_NUMBER} --healthcheck-url=${HEALTH_CHECK_URL} --check-time-interval=5 --max-check-count=1 6002 6003\", execTimeout: 600000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'demo_2', remoteDirectorySDF: false, removePrefix: '', sourceFiles: '*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
                         }
                     }
                 }
