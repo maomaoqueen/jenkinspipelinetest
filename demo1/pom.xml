@@ -36,7 +36,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>pipeline-test</finalName>
+		<finalName>pipeline-demo1</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
