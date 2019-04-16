@@ -78,6 +78,7 @@ pipeline {
 
                         if (resultcode1 != '200' && resultcode2 != '200') {
                             echo "1111"
+                            currentBuild.result = "UNSTABLE"
                         } else {
                             echo "222"
                         }
