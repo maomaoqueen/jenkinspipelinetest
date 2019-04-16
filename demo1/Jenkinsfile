@@ -75,6 +75,12 @@ pipeline {
                         def resultcode2 = sh(script: "echo `curl -s -o /dev/null -w \\\"%{http_code}\\\" http://10.10.200.135:6001${env.HEALTH_CHECK_URL}`", returnStdout: true)
                         echo "${resultcode1}"
                         echo "${resultcode2}"
+
+                        if(resultcode1 != "200" && resultcode2 != "200"){
+                            currentBuild.result = "FAILED"
+                        }
+
+                        sh 'docker -v'
                     }
                 }
             }
